@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <!-- 网站标题 -->
+    <title>{% block title %}{% endblock %}</title>
+    <!--引入bootstrap的css-->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <!--引入pygmentize的monokai.css，用于高亮代码-->
+    <link rel="stylesheet" href="{% static 'highlight_css/monokai.css' %}">
+</head>
+
+<body>
+    <!--导航栏-->
+    {% include 'header.html' %}
+    <!-- 预置的具体页面 -->
+    {% block content %}{% endblock content %}
+    <!-- 页脚 -->
+    {% include 'footer.html' %}
+    <!-- 注入jquery.js -->
+    <script src="{% static 'jquery/jquery-3.6.0.js' %}"></script>
+    <!-- CDN注入popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <!-- 注入bootstrap的js文件 -->
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+
+</body>
+</html>
