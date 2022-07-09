@@ -52,5 +52,15 @@ def article_create(request):
         if article_post_form.is_valid():
             # 创建提交到数据库的对象(暂不提交)
             add_new_article = article_post_form.save(commit=False)
-            # 指定
-
+            # 指定id = 1的用户为作者
+            # TODO:修改判断用户的逻辑
+            add_new_article.author = User.objects.get(id=1)
+            add_new_article.save()
+            return redirect('article:show_article')
+        else:
+            return HttpResponse("表单格式错误！")
+    else:
+        # 创建空表单实例
+        article_post_form = ArticlePostForm()
+        create_context = {'article_post_form': article_post_form}
+        return render(request, template_name='article/create.html', context=create_context)
