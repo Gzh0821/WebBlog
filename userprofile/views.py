@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import UserLoginForm
 
 
@@ -17,7 +17,7 @@ def user_login(request):
             user = authenticate(username=data['username'], password=data['password'])
             if user:
                 login(request, user)
-                return redirect("article:article_list")
+                return redirect("article:show_article")
             else:
                 return HttpResponse("账号或密码输入有误。请重新输入~")
         else:
@@ -26,3 +26,8 @@ def user_login(request):
         user_login_form = UserLoginForm()
         login_context = {'login_form': user_login_form}
         return render(request, template_name='userprofile/login.html', context=login_context)
+
+
+def user_logout(request):
+    logout(request)
+    return redirect("article:show_article")

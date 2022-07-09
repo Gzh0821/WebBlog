@@ -19,7 +19,7 @@
                             {{ user.username }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="javascript:void(0);">退出登录</a>
+                            <a class="dropdown-item" href="{% url "userprofile:logout" %}">退出登录</a>
                         </div>
                     </li>
                     <!-- 如果用户未登录，则显示 “登录” -->
