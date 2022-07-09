@@ -1,18 +1,36 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
+    <div class="container">
 
-    <!-- 导航栏logo -->
-    <a class="navbar-brand" href="{% url 'article:show_article' %}">Gaozih的博客</a>
+        <!-- 导航栏logo -->
+        <a class="navbar-brand" href="{% url 'article:show_article' %}">Gaozih的博客</a>
 
-    <!-- 导航栏入口 -->
-    <div>
-      <ul class="navbar-nav">
-        <!-- 项目 -->
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'article:show_article' %}">文章</a>
-        </li>
-      </ul>
+        <!-- 导航栏入口 -->
+        <div>
+            <ul class="navbar-nav">
+                <!-- 项目 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'article:show_article' %}">文章</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <!-- 如果用户已经登录，则显示用户名下拉框 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="javascript:void(0);">退出登录</a>
+                        </div>
+                    </li>
+                    <!-- 如果用户未登录，则显示 “登录” -->
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'userprofile:login' %}">登录</a>
+                    </li>
+                    <!-- if 语句在这里结束 -->
+                {% endif %}
+            </ul>
+        </div>
+
     </div>
-
-  </div>
 </nav>

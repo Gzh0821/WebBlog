@@ -45,7 +45,7 @@
                 btn: ['确认', '取消',],
                 // 点击确定按钮后调用的回调函数
                 yes: function (index, layero) {
-                    // 指定应当前往的 url
+                    // 使JS点击不可见的按钮,执行表单的action
                     $('form#safe_delete button').click();
                     layer.close(index);
                 },
