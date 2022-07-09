@@ -64,3 +64,14 @@ def article_create(request):
         article_post_form = ArticlePostForm()
         create_context = {'article_post_form': article_post_form}
         return render(request, template_name='article/create.html', context=create_context)
+
+
+def article_delete(request, article_id):
+    # TODO:限制用户删除文章
+    if request.method == 'POST':
+        select_article = ArticleStorage.objects.get(id=article_id)
+        select_article.delete()
+        return redirect('article:show_article')
+    else:
+        return HttpResponse("删除请求格式错误！")
+
