@@ -20,7 +20,7 @@
                         <!-- 摘要 -->
                         <div class="card-body">
                             <!--取出正文的前100字-->
-                            <p class="card-text">{{ article.text|slice:'100' }}...</p>
+                            <p class="card-text">{{ article.text|slice:'100'|safe }}...</p>
                         </div>
                         <!-- 注脚 -->
                         <div class="card-footer">
