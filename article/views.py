@@ -27,17 +27,16 @@ def article_detail(request, article_id):
     selected_article = ArticleStorage.objects.get(id=article_id)
     # 该文章不可见时进行屏蔽处理
     # TODO:创建单独的屏蔽页面
-    if selected_article.if_publish is False:
-        response = HttpResponse("404 Not Found.Your user agent:" + str(request.META['HTTP_USER_AGENT']))
-        response.status_code = 404
-        return response
-    selected_article.text = markdown.markdown(selected_article.text,
-                                              extensions=[
-                                                  # 缩写,表格等常用扩展
-                                                  'markdown.extensions.extra',
-                                                  # 语法高亮扩展
-                                                  'markdown.extensions.codehilite',
-                                              ])
+    if selected_article.if_publish:
+        selected_article.text = markdown.markdown(selected_article.text,
+                                                  extensions=[
+                                                      # 缩写,表格等常用扩展
+                                                      'markdown.extensions.extra',
+                                                      # 语法高亮扩展
+                                                      'markdown.extensions.codehilite',
+                                                  ])
+    else:
+        selected_article.text = '该文章不可见！'
     # 传递给模板的对象
     detail_context = {'article': selected_article}
     return render(request, template_name='article/detail.html', context=detail_context)
@@ -58,7 +57,7 @@ def article_create(request):
             add_new_article.save()
             return redirect('article:show_article')
         else:
-            return HttpResponse("表单格式错误！")
+            return HttpResponse("创建表单格式错误！")
     else:
         # 创建空表单实例
         article_post_form = ArticlePostForm()
@@ -75,3 +74,22 @@ def article_delete(request, article_id):
     else:
         return HttpResponse("删除请求格式错误！")
 
+
+def article_update(request, article_id):
+    select_article = ArticleStorage.objects.get(id=article_id)
+    if request.method == 'POST':
+        # 存储提交的POST数据
+        article_post_form = ArticlePostForm(data=request.POST)
+        if article_post_form.is_valid():
+            select_article.title = request.POST['title']
+            select_article.text = request.POST['text']
+            select_article.if_publish = article_post_form.cleaned_data['if_publish']
+            select_article.save()
+            return redirect("article:article_detail", article_id=article_id)
+        else:
+            return HttpResponse("修改表单格式错误！")
+    else:
+        article_post_form = ArticlePostForm()
+        update_context = {'article': select_article, 'article_post_form': article_post_form}
+        # 将响应返回到模板中
+        return render(request, 'article/update.html', update_context)
