@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}删除用户 - delete{% endblock title %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <form
+                style="display:none;"
+                id="user_delete"
+                action="{% url 'userprofile:delete' %}"
+                method="POST"
+        >
+            {% csrf_token %}
+            <button type="submit">send</button>
+        </form>
+        <div class="container">
+            <div class="row">
+                <h1 class="col-12 mt-4 mb-4">删除用户</h1>
+                <div class="col-12">
+                    <p>正在删除用户：{{ user.username }}</p><br>
+                    <span style="color: #FF0000; ">用户删除后不可恢复！</span>
+                    <br>
+                    <input type="button" class="btn btn-primary" onclick="user_delete()" value="删除"/>
+                    <input type="button" class="btn btn-primary" onclick="javascript:history.back()" value="返回"/>
+                    <span style="color: #FF0000; ">{{ error_msg }}</span>
+                </div>
+            </div>
+        </div>
+        <script>
+            function user_delete() {
+                // 调用layer弹窗组件
+                layer.open({
+                    title: "删除用户",
+                    content: "确认删除该用户吗？此操作不可撤销。",
+                    btn: ['确认', '取消',],
+                    yes: function (index, layero) {
+                        $('form#user_delete button').click();
+                        layer.close(index);
+                    },
+                    btn2: function () {
+                        layer.closeAll();
+                    },
+                })
+            }
+        </script>
+    {% endif %}
+{% endblock content %}

@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-
+from django.http import HttpResponseRedirect
 from .forms import *
 
 
@@ -9,6 +10,8 @@ from .forms import *
 
 def user_login(request):
     error_msg = ""
+    if request.user.is_authenticated:
+        return redirect("article:show_article")
     if request.method == 'POST':
         user_login_form = UserLoginForm(data=request.POST)
         if user_login_form.is_valid():
@@ -30,11 +33,13 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect("article:show_article")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def user_register(request):
     error_msg = ""
+    if request.user.is_authenticated:
+        return redirect("article:show_article")
     if request.method == 'POST':
         user_register_form = UserRegisterForm(request.POST)
         if user_register_form.is_valid():
@@ -46,3 +51,18 @@ def user_register(request):
     user_register_form = UserRegisterForm()
     register_context = {'register_form': user_register_form, 'error_msg': error_msg}
     return render(request, template_name='userprofile/register.html', context=register_context)
+
+
+@login_required
+def user_delete(request):
+    error_msg = ""
+    delete_user = request.user
+    if request.method == 'POST':
+        logout(request)
+        delete_user.delete()
+        return redirect('article:show_article')
+    delete_context = {'error_msg': error_msg}
+    return render(request, template_name='userprofile/delete.html', context=delete_context)
+
+
+
