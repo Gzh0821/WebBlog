@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block title %}注册 - register{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <form method="post" action="." class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form register_form %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">注册</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -6,9 +6,10 @@
 {% block content %}
     <div class="container">
         <div class="row">
+            <h1 class="col-12 mt-4 mb-4">用户登录</h1>
             <div class="col-12">
                 <br>
-                <form method="post" action=".">
+                <form method="post" action="." style="width: 50%">
                     {% csrf_token %}
                     <!-- 账号 -->
                     <div class="form-group">
@@ -22,6 +23,7 @@
                     </div>
                     <!-- 提交按钮 -->
                     <button type="submit" class="btn btn-primary">提交</button>
+                    <span style="color: #FF0000; ">{{ error_msg }}</span>
                 </form>
             </div>
         </div>
