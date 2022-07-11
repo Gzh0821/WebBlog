@@ -46,6 +46,7 @@ def user_register(request):
         user_register_form = UserRegisterForm(request.POST)
         if user_register_form.is_valid():
             new_user = user_register_form.save()
+            Profile.objects.create(user=request.user)
             login(request, new_user)
             return redirect('article:show_article')
         else:
@@ -81,8 +82,18 @@ def profile_edit(request):
             profile.phone = profile_cdata['phone']
             profile.bio = profile_cdata['bio']
             profile.save()
-            return redirect("userprofile:edit")
+            return redirect("userprofile:userinfo", show_user_id=request.user.id)
         else:
             error_msg = "输入格式错误，请重新输入！"
     edit_context = {'profile': profile, 'error_msg': error_msg}
     return render(request, template_name='userprofile/edit.html', context=edit_context)
+
+
+def profile_show(request, show_user_id):
+    show_user = User.objects.get(id=show_user_id)
+    if Profile.objects.filter(user_id=request.user.id).exists():
+        profile = Profile.objects.get(user_id=request.user.id)
+    else:
+        profile = Profile.objects.create(user=request.user)
+    edit_context = {'profile': profile, 'show_user': show_user}
+    return render(request, template_name='userprofile/info.html', context=edit_context)

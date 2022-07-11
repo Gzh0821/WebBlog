@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} 用户信息 {% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <h1 class="col-12 mt-4 mb-4">个人信息</h1>
+            <div class="col-12">
+                <br>
+                <div class="col-md-4">撰写权限: {{ profile.author_permission }}</div><hr>
+                <div class="col-md-4">评论权限: {{ profile.author_permission }}</div><hr>
+                <div class="col-md-4">用户名: {{ show_user.username }}</div><hr>
+                <div class="col-md-4">电话：{{ profile.phone }}</div><hr>
+                <div class="col-md-4">个人简介：</div>
+                <div class="col-12">{{ profile.bio }}</div><hr>
+                {% if show_user.id == user.id %}
+                    <a href="{% url 'userprofile:edit' %}" class="btn btn-primary">编辑</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

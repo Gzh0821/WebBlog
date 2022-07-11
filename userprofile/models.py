@@ -17,6 +17,10 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to='avatar/%Y%m%d', blank=True)
     # 简介
     bio = models.TextField(max_length=300, blank=True)
+    # 作者权限
+    author_permission = models.BooleanField(default=False)
+    # 评论权限
+    comment_permission = models.BooleanField(default=True)
 
     def __str__(self):
         return f'user:{self.user.username}'

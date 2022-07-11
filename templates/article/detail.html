@@ -10,15 +10,19 @@
     <!-- 文章详情 -->
     <div class="container">
         <div class="row">
-            <!-- 标题及作者 -->
+            <!-- 标题 -->
             <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
+            <!-- 概述 -->
             <div class="col-12">
                 <p>{{ article.overview }}</p>
             </div>
-            <div class="col-12 alert alert-success">作者：{{ article.author }}
+            <div class="col-12 alert alert-success">
+                <div>作者：{{ article.author }}</div>
                 {% if permission_grade > 0 %}
-                | <a href="{% url 'article:article_update' article.id %}">编辑文章</a>
-                | <a href="javascript:void(0);" onclick="confirm_delete()">删除文章</a>
+                    <div>
+                        <a href="{% url 'article:article_update' article.id %}">编辑文章</a>
+                        | <a href="javascript:void(0);" onclick="confirm_delete()">删除文章</a>
+                    </div>
                 {% endif %}
             </div>
             <form

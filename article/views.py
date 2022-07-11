@@ -6,9 +6,8 @@ from django.shortcuts import render, redirect
 
 from .forms import ArticlePostForm
 from .models import *
+from userprofile.models import Profile
 
-
-# Views here.
 
 def test_hello_word(request):
     """A simple HelloWorld test,return USER_AGENT for example"""
@@ -18,7 +17,7 @@ def test_hello_word(request):
 def show_article(request):
     """展示所有发布的文章"""
     article_list = ArticleStorage.objects.filter(if_publish=True)
-    paginator = Paginator(article_list, 3)
+    paginator = Paginator(article_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     # 传递给模板的对象
@@ -30,6 +29,7 @@ def show_article(request):
 def article_detail(request, article_id):
     """获得指定id的文章"""
     selected_article = ArticleStorage.objects.get(id=article_id)
+    profile = Profile.objects.get(user_id=request.user.id)
     # 该文章不可见时进行屏蔽处理
     # TODO:创建单独的屏蔽页面
     if selected_article.if_publish:
@@ -39,12 +39,14 @@ def article_detail(request, article_id):
                                                       'markdown.extensions.extra',
                                                       # 语法高亮扩展
                                                       'markdown.extensions.codehilite',
+                                                      # 标题扩展
+                                                      'markdown.extensions.toc',
                                                   ])
     else:
         selected_article.text = '该文章不可见！'
-    if request.user.is_superuser:
-        permission_grade = 3
-    elif selected_article.author == request.user:
+    if request.user.is_superuser and profile.author_permission:
+        permission_grade = 4
+    elif selected_article.author == request.user and profile.author_permission:
         permission_grade = 1
     else:
         permission_grade = 0
@@ -56,6 +58,11 @@ def article_detail(request, article_id):
 @login_required
 def article_create(request):
     """处理文章创建"""
+    error_msg = ""
+    create_user = request.user
+    profile = Profile.objects.get(user_id=create_user.id)
+    if not profile.author_permission:
+        return redirect('article:show_article')
     if request.method == 'POST':
         # 存储提交的POST数据
         article_post_form = ArticlePostForm(data=request.POST)
@@ -64,37 +71,33 @@ def article_create(request):
             # 创建提交到数据库的对象(暂不提交)
             add_new_article = article_post_form.save(commit=False)
             # 指定提交的用户为作者
-            add_new_article.author = request.user
+            add_new_article.author = create_user
             add_new_article.save()
             return redirect('article:show_article')
         else:
-            return HttpResponse("创建表单格式错误！")
-    else:
-        # 创建空表单实例
-        article_post_form = ArticlePostForm()
-        create_context = {'article_post_form': article_post_form}
-        return render(request, template_name='article/create.html', context=create_context)
+            error_msg = "创建表单格式错误！"
+    article_post_form = ArticlePostForm()
+    create_context = {'article_post_form': article_post_form, 'error_msg': error_msg}
+    return render(request, template_name='article/create.html', context=create_context)
 
 
 @login_required
 def article_delete(request, article_id):
-    # TODO:限制用户删除文章
-    if request.method == 'POST':
+    profile = Profile.objects.get(user_id=request.user.id)
+    if request.method == 'POST' and profile.author_permission:
         select_article = ArticleStorage.objects.get(id=article_id)
         if select_article.author == request.user or request.user.is_superuser:
             select_article.delete()
             return redirect('article:show_article')
-        else:
-            return HttpResponse("无删除权限！")
-    else:
-        return redirect("article:article_detail", article_id=article_id)
+    return redirect("article:article_detail", article_id=article_id)
 
 
 @login_required
 def article_update(request, article_id):
     error_msg = ""
     select_article = ArticleStorage.objects.get(id=article_id)
-    if not (select_article.author == request.user or request.user.is_superuser):
+    profile = Profile.objects.get(user_id=request.user.id)
+    if not (profile.author_permission and (select_article.author == request.user or request.user.is_superuser)):
         return redirect("article:article_detail", article_id=article_id)
     if request.method == 'POST':
         # 存储提交的POST数据
