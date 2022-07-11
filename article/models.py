@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 # ---tips---
-# 修改模型后，需要使用 python manage.py makemigrations article 记录修改为一次迁移
+# 修改模型后，需要使用 python manage.py makemigrations 记录修改为一次迁移
 # 再使用 python manage.py migrate 将迁移应用到数据库中
 class ArticleStorage(models.Model):
     """博客文章数据模型/库"""
@@ -12,7 +12,9 @@ class ArticleStorage(models.Model):
     # 文章作者
     author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     # 文章标题
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=80)
+    # 文章概述
+    overview = models.CharField(max_length=100, blank=True)
     # 文章正文
     text = models.TextField()
     # 文章创建时间

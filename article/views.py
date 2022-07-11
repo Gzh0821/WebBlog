@@ -1,5 +1,6 @@
 import markdown
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -17,9 +18,12 @@ def test_hello_word(request):
 def show_article(request):
     """展示所有发布的文章"""
     article_list = ArticleStorage.objects.filter(if_publish=True)
+    paginator = Paginator(article_list, 3)
+    page = request.GET.get('page')
+    articles = paginator.get_page(page)
     # 传递给模板的对象
     # TODO:修复markdown在预览界面的显示问题
-    show_article_context = {'articles': article_list}
+    show_article_context = {'articles': articles}
     return render(request, template_name='article/list.html', context=show_article_context)
 
 
@@ -84,6 +88,7 @@ def article_delete(request, article_id):
             return HttpResponse("无删除权限！")
     else:
         return redirect("article:article_detail", article_id=article_id)
+
 
 @login_required
 def article_update(request, article_id):
