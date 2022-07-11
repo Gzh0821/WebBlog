@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     # 注册功能，默认关闭
-    path('register/', views.user_register, name='register'),
-    path('delete/', views.user_delete, name='delete')
+    # path('register/', views.user_register, name='register'),
+    path('delete/', views.user_delete, name='delete'),
+    path('edit/', views.profile_edit, name='edit'),
 ]

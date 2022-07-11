@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+
 from .forms import *
+from .models import *
 
 
 # Create your views here.
@@ -65,4 +67,22 @@ def user_delete(request):
     return render(request, template_name='userprofile/delete.html', context=delete_context)
 
 
-
+@login_required
+def profile_edit(request):
+    error_msg = ""
+    if Profile.objects.filter(user_id=request.user.id).exists():
+        profile = Profile.objects.get(user_id=request.user.id)
+    else:
+        profile = Profile.objects.create(user=request.user)
+    if request.method == 'POST':
+        profile_form = ProfileForm(data=request.POST)
+        if profile_form.is_valid():
+            profile_cdata = profile_form.cleaned_data
+            profile.phone = profile_cdata['phone']
+            profile.bio = profile_cdata['bio']
+            profile.save()
+            return redirect("userprofile:edit")
+        else:
+            error_msg = "输入格式错误，请重新输入！"
+    edit_context = {'profile': profile, 'error_msg': error_msg}
+    return render(request, template_name='userprofile/edit.html', context=edit_context)

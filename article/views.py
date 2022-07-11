@@ -1,7 +1,8 @@
 import markdown
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+
 from .forms import ArticlePostForm
 from .models import *
 
@@ -37,13 +38,20 @@ def article_detail(request, article_id):
                                                   ])
     else:
         selected_article.text = '该文章不可见！'
+    if request.user.is_superuser:
+        permission_grade = 3
+    elif selected_article.author == request.user:
+        permission_grade = 1
+    else:
+        permission_grade = 0
     # 传递给模板的对象
-    detail_context = {'article': selected_article}
+    detail_context = {'article': selected_article, 'permission_grade': permission_grade}
     return render(request, template_name='article/detail.html', context=detail_context)
 
 
+@login_required
 def article_create(request):
-    """处理文章提交和创建"""
+    """处理文章创建"""
     if request.method == 'POST':
         # 存储提交的POST数据
         article_post_form = ArticlePostForm(data=request.POST)
@@ -51,9 +59,8 @@ def article_create(request):
         if article_post_form.is_valid():
             # 创建提交到数据库的对象(暂不提交)
             add_new_article = article_post_form.save(commit=False)
-            # 指定id = 1的用户为作者
-            # TODO:修改判断用户的逻辑
-            add_new_article.author = User.objects.get(id=1)
+            # 指定提交的用户为作者
+            add_new_article.author = request.user
             add_new_article.save()
             return redirect('article:show_article')
         else:
@@ -65,31 +72,34 @@ def article_create(request):
         return render(request, template_name='article/create.html', context=create_context)
 
 
+@login_required
 def article_delete(request, article_id):
     # TODO:限制用户删除文章
     if request.method == 'POST':
         select_article = ArticleStorage.objects.get(id=article_id)
-        select_article.delete()
-        return redirect('article:show_article')
+        if select_article.author == request.user or request.user.is_superuser:
+            select_article.delete()
+            return redirect('article:show_article')
+        else:
+            return HttpResponse("无删除权限！")
     else:
-        return HttpResponse("删除请求格式错误！")
+        return redirect("article:article_detail", article_id=article_id)
 
-
+@login_required
 def article_update(request, article_id):
+    error_msg = ""
     select_article = ArticleStorage.objects.get(id=article_id)
+    if not (select_article.author == request.user or request.user.is_superuser):
+        return redirect("article:article_detail", article_id=article_id)
     if request.method == 'POST':
         # 存储提交的POST数据
-        article_post_form = ArticlePostForm(data=request.POST)
+        article_post_form = ArticlePostForm(data=request.POST, instance=select_article)
         if article_post_form.is_valid():
-            select_article.title = request.POST['title']
-            select_article.text = request.POST['text']
-            select_article.if_publish = article_post_form.cleaned_data['if_publish']
-            select_article.save()
+            article_post_form.save()
             return redirect("article:article_detail", article_id=article_id)
         else:
-            return HttpResponse("修改表单格式错误！")
-    else:
-        article_post_form = ArticlePostForm()
-        update_context = {'article': select_article, 'article_post_form': article_post_form}
-        # 将响应返回到模板中
-        return render(request, 'article/update.html', update_context)
+            error_msg = "文章格式错误，请重新编辑！"
+    article_post_form = ArticlePostForm()
+    update_context = {'article': select_article, 'article_post_form': article_post_form, 'error_msg': error_msg}
+    # 将响应返回到模板中
+    return render(request, 'article/update.html', update_context)
