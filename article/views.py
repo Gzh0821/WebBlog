@@ -16,7 +16,7 @@ def test_hello_word(request):
 
 def show_article(request):
     """展示所有发布的文章"""
-    article_list = ArticleStorage.objects.filter(if_publish=True)
+    article_list = ArticleStorage.objects.all()
     paginator = Paginator(article_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
@@ -29,10 +29,9 @@ def show_article(request):
 def article_detail(request, article_id):
     """获得指定id的文章"""
     selected_article = ArticleStorage.objects.get(id=article_id)
-    profile = Profile.objects.get(user_id=request.user.id)
     # 该文章不可见时进行屏蔽处理
     # TODO:创建单独的屏蔽页面
-    if selected_article.if_publish:
+    if selected_article.if_publish or request.user.is_superuser:
         selected_article.text = markdown.markdown(selected_article.text,
                                                   extensions=[
                                                       # 缩写,表格等常用扩展
@@ -44,12 +43,14 @@ def article_detail(request, article_id):
                                                   ])
     else:
         selected_article.text = '该文章不可见！'
-    if request.user.is_superuser and profile.author_permission:
-        permission_grade = 4
-    elif selected_article.author == request.user and profile.author_permission:
-        permission_grade = 1
+    if not request.user.is_authenticated:
+        permission_grade = -1
     else:
-        permission_grade = 0
+        profile = Profile.objects.get(user_id=request.user.id)
+        if not profile.author_permission:
+            permission_grade = 0
+        else:
+            permission_grade = 4 if request.user.is_superuser else(1 if selected_article.author == request.user else 0)
     # 传递给模板的对象
     detail_context = {'article': selected_article, 'permission_grade': permission_grade}
     return render(request, template_name='article/detail.html', context=detail_context)
