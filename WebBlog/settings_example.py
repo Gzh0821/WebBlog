@@ -29,10 +29,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'comment',
     'userprofile',
     'bootstrap4',
     'password_reset',
-    'article.apps.ArticleConfig',
+    'article',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
