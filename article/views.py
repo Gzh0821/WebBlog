@@ -10,6 +10,11 @@ from .models import *
 from userprofile.models import Profile
 
 
+# 主页
+def home_page(request):
+    return redirect("article:show_article")
+
+
 def test_hello_word(request):
     """A simple HelloWorld test,return USER_AGENT for example"""
     return HttpResponse("Your user agent:" + str(request.META['HTTP_USER_AGENT']))
@@ -37,6 +42,7 @@ def show_article(request):
 
 def article_detail(request, article_id):
     """获得指定id的文章"""
+    error_msg = ""
     selected_article = ArticleStorage.objects.get(id=article_id)
     # 该文章不可见时进行屏蔽处理
     # TODO:创建单独的屏蔽页面
@@ -49,10 +55,12 @@ def article_detail(request, article_id):
             # 标题扩展
             'markdown.extensions.toc',
         ])
+    if not selected_article.if_publish:
+        error_msg = '该文章未被公开'
     if selected_article.if_publish or request.user.is_superuser:
         selected_article.text = article_markdown.convert(selected_article.text)
     else:
-        selected_article.text = '该文章不可见！'
+        selected_article.text = '该文章未被公开！'
     if not request.user.is_authenticated:
         permission_grade = -1
     else:
@@ -62,7 +70,10 @@ def article_detail(request, article_id):
         else:
             permission_grade = 4 if request.user.is_superuser else (1 if selected_article.author == request.user else 0)
     # 传递给模板的对象
-    detail_context = {'article': selected_article, 'permission_grade': permission_grade, 'toc': article_markdown.toc}
+    detail_context = {'article': selected_article,
+                      'permission_grade': permission_grade,
+                      'toc': article_markdown.toc,
+                      'error_msg': error_msg}
     return render(request, template_name='article/detail.html', context=detail_context)
 
 

@@ -2,14 +2,14 @@
     <div class="container">
 
         <!-- 导航栏logo -->
-        <a class="navbar-brand" href="{% url 'article:show_article' %}">Gaozih的博客</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Gaozih的博客</a>
 
         <!-- 导航栏入口 -->
         <div>
             <ul class="navbar-nav">
                 <!-- 项目 -->
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'article:show_article' %}">文章</a>
+                    <a class="nav-link" href="{% url 'article:show_article' %}">所有文章</a>
                 </li>
                 {% if user.is_authenticated %}
                     <!-- 如果用户已经登录，则显示用户名下拉框 -->
