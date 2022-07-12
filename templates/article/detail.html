@@ -42,14 +42,38 @@
                     <p>{{ article.text|safe }}</p>
                 </div>
             </div>
+            <br>
             <!--目录部分-->
-            <div class="col-3 mt-4">
-                <h4><strong>目录</strong></h4>
-                <hr>
-                <div>
-                    {{ toc|safe }}
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar__inner">
+                    <br>
+                    <h4><strong>目录</strong></h4>
+                    <hr>
+                    <div>
+                        {{ toc|safe }}
+                    </div>
                 </div>
             </div>
+            <style>
+                .sidebar {
+                    will-change: min-height;
+                }
+
+                .sidebar__inner {
+                    transform: translate(0, 0);
+                    transform: translate3d(0, 0, 0);
+                    will-change: position, transform;
+                }
+            </style>
+            {% block script %}
+                <script src="{% static 'sticky_sidebar/jquery.sticky-sidebar.min.js' %}"></script>
+                <script type="text/javascript">
+                    $('#sidebar').stickySidebar({
+                        topSpacing: 20,
+                        bottomSpacing: 20,
+                    });
+                </script>
+            {% endblock script %}
         </div>
     </div>
 
@@ -77,5 +101,4 @@
             })
         }
     </script>
-
 {% endblock content %}

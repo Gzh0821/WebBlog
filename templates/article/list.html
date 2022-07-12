@@ -26,44 +26,43 @@
         {% if search %}
             {% if articles %}
                 <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
-                <hr>
             {% else %}
                 <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
-                <hr>
             {% endif %}
         {% endif %}
+        <hr>
         <div class="row mt-2">
             <!--列出每篇文章-->
             {% for article in articles %}
                 <!-- 文章内容 -->
                 <div class="col-12">
                     <!-- 卡片容器 -->
-                        <!-- 标题 -->
-                        <h4>
-                            <b>
-                                <a href="{% url 'article:article_detail' article.id %}"
-                                   style="color: black; font-size: 125%"
-                                >
-                                    {{ article.title }}
-                                </a>
-                            </b>
-                        </h4>
-                        <!-- 概述 -->
-                        <div>
-                            <!--取出概述的前150字-->
-                            <p style="color: gray;">{{ article.overview|slice:'100'|safe }}...</p>
-                        </div>
-                        <!-- 注脚 -->
-                        <p>
-                            <!-- 附加信息 -->
-                            <span style="color: blue;">
+                    <!-- 标题 -->
+                    <h4>
+                        <b>
+                            <a href="{% url 'article:article_detail' article.id %}"
+                               style="color: black; font-size: 125%"
+                            >
+                                {{ article.title }}
+                            </a>
+                        </b>
+                    </h4>
+                    <!-- 概述 -->
+                    <div>
+                        <!--取出概述的前150字-->
+                        <p style="color: gray;">{{ article.overview|slice:'100'|safe }}...</p>
+                    </div>
+                    <!-- 注脚 -->
+                    <p>
+                        <!-- 附加信息 -->
+                        <span style="color: blue;">
                                 {{ article.created_time|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
                             </span>
-                            <span style="color: darkred;">
+                        <span style="color: darkred;">
                                 {{ article.updated_time|date:'Y-m-d' }} 更新
                             </span>
-                        </p>
-                <hr>
+                    </p>
+                    <hr>
                 </div>
             {% endfor %}
 
