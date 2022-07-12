@@ -1,6 +1,7 @@
 import markdown
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -16,13 +17,21 @@ def test_hello_word(request):
 
 def show_article(request):
     """展示所有发布的文章"""
-    article_list = ArticleStorage.objects.all()
+    search = request.GET.get('search')
+    if search:
+        # 进行搜索
+        article_list = ArticleStorage.objects.filter(Q(title__icontains=search) |
+                                                     Q(text__icontains=search) |
+                                                     Q(overview__icontains=search))
+    else:
+        search = ''
+        article_list = ArticleStorage.objects.all()
     paginator = Paginator(article_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     # 传递给模板的对象
     # TODO:修复markdown在预览界面的显示问题
-    show_article_context = {'articles': articles}
+    show_article_context = {'articles': articles, 'search': search}
     return render(request, template_name='article/list.html', context=show_article_context)
 
 
@@ -31,16 +40,17 @@ def article_detail(request, article_id):
     selected_article = ArticleStorage.objects.get(id=article_id)
     # 该文章不可见时进行屏蔽处理
     # TODO:创建单独的屏蔽页面
+    article_markdown = markdown.Markdown(
+        extensions=[
+            # 缩写,表格等常用扩展
+            'markdown.extensions.extra',
+            # 语法高亮扩展
+            'markdown.extensions.codehilite',
+            # 标题扩展
+            'markdown.extensions.toc',
+        ])
     if selected_article.if_publish or request.user.is_superuser:
-        selected_article.text = markdown.markdown(selected_article.text,
-                                                  extensions=[
-                                                      # 缩写,表格等常用扩展
-                                                      'markdown.extensions.extra',
-                                                      # 语法高亮扩展
-                                                      'markdown.extensions.codehilite',
-                                                      # 标题扩展
-                                                      'markdown.extensions.toc',
-                                                  ])
+        selected_article.text = article_markdown.convert(selected_article.text)
     else:
         selected_article.text = '该文章不可见！'
     if not request.user.is_authenticated:
@@ -50,9 +60,9 @@ def article_detail(request, article_id):
         if not profile.author_permission:
             permission_grade = 0
         else:
-            permission_grade = 4 if request.user.is_superuser else(1 if selected_article.author == request.user else 0)
+            permission_grade = 4 if request.user.is_superuser else (1 if selected_article.author == request.user else 0)
     # 传递给模板的对象
-    detail_context = {'article': selected_article, 'permission_grade': permission_grade}
+    detail_context = {'article': selected_article, 'permission_grade': permission_grade, 'toc': article_markdown.toc}
     return render(request, template_name='article/detail.html', context=detail_context)
 
 

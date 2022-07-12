@@ -10,33 +10,44 @@
     <!-- 文章详情 -->
     <div class="container">
         <div class="row">
-            <!-- 标题 -->
-            <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
-            <!-- 概述 -->
-            <div class="col-12">
-                <p>{{ article.overview }}</p>
+            <!--文章部分-->
+            <div class="col-9">
+                <!-- 标题 -->
+                <h1 class="mt-4 mb-4">{{ article.title }}</h1>
+                <!-- 概述 -->
+                <div class="">
+                    <p>{{ article.overview }}</p>
+                </div>
+                <div class="alert alert-success">
+                    <div>作者：{{ article.author }}</div>
+                    {% if permission_grade > 0 %}
+                        <div>
+                            <a href="{% url 'article:article_update' article.id %}">编辑文章</a>
+                            | <a href="javascript:void(0);" onclick="confirm_delete()">删除文章</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <form
+                        style="display:none;"
+                        id="safe_delete"
+                        action="{% url 'article:article_delete' article.id %}"
+                        method="POST"
+                >
+                    {% csrf_token %}
+                    <button type="submit">send</button>
+                </form>
+                <!-- 文章正文 -->
+                <div class="">
+                    <p>{{ article.text|safe }}</p>
+                </div>
             </div>
-            <div class="col-12 alert alert-success">
-                <div>作者：{{ article.author }}</div>
-                {% if permission_grade > 0 %}
-                    <div>
-                        <a href="{% url 'article:article_update' article.id %}">编辑文章</a>
-                        | <a href="javascript:void(0);" onclick="confirm_delete()">删除文章</a>
-                    </div>
-                {% endif %}
-            </div>
-            <form
-                    style="display:none;"
-                    id="safe_delete"
-                    action="{% url 'article:article_delete' article.id %}"
-                    method="POST"
-            >
-                {% csrf_token %}
-                <button type="submit">send</button>
-            </form>
-            <!-- 文章正文 -->
-            <div class="col-12">
-                <p>{{ article.text|safe }}</p>
+            <!--目录部分-->
+            <div class="col-3 mt-4">
+                <h4><strong>目录</strong></h4>
+                <hr>
+                <div>
+                    {{ toc|safe }}
+                </div>
             </div>
         </div>
     </div>
