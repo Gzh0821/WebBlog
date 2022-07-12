@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import ArticlePostForm
 from .models import *
@@ -43,7 +43,7 @@ def show_article(request):
 def article_detail(request, article_id):
     """获得指定id的文章"""
     error_msg = ""
-    selected_article = ArticleStorage.objects.get(id=article_id)
+    selected_article = get_object_or_404(ArticleStorage, id=article_id)
     # 该文章不可见时进行屏蔽处理
     # TODO:创建单独的屏蔽页面
     article_markdown = markdown.Markdown(
@@ -107,7 +107,7 @@ def article_create(request):
 def article_delete(request, article_id):
     profile = Profile.objects.get(user_id=request.user.id)
     if request.method == 'POST' and profile.author_permission:
-        select_article = ArticleStorage.objects.get(id=article_id)
+        select_article = get_object_or_404(ArticleStorage, id=article_id)
         if select_article.author == request.user or request.user.is_superuser:
             select_article.delete()
             return redirect('article:show_article')
@@ -117,7 +117,7 @@ def article_delete(request, article_id):
 @login_required
 def article_update(request, article_id):
     error_msg = ""
-    select_article = ArticleStorage.objects.get(id=article_id)
+    select_article = get_object_or_404(ArticleStorage, id=article_id)
     profile = Profile.objects.get(user_id=request.user.id)
     if not (profile.author_permission and (select_article.author == request.user or request.user.is_superuser)):
         return redirect("article:article_detail", article_id=article_id)

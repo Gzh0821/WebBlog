@@ -22,7 +22,7 @@
                 </form>
             </div>
         </div>
-        <br>
+    <br>
         {% if search %}
             {% if articles %}
                 <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
@@ -36,34 +36,21 @@
             <!--列出每篇文章-->
             {% for article in articles %}
                 <!-- 文章内容 -->
-                <div class="col-12">
+                <div class="col-4 mb-4">
                     <!-- 卡片容器 -->
+                    <div class="card h-100">
                         <!-- 标题 -->
-                        <h4>
-                            <b>
-                                <a href="{% url 'article:article_detail' article.id %}"
-                                   style="color: black; font-size: 125%"
-                                >
-                                    {{ article.title }}
-                                </a>
-                            </b>
-                        </h4>
+                        <h4 class="card-header">{{ article.title }}</h4>
                         <!-- 概述 -->
-                        <div>
+                        <div class="card-body">
                             <!--取出概述的前150字-->
-                            <p style="color: gray;">{{ article.overview|slice:'100'|safe }}...</p>
+                            <p class="card-text">{{ article.overview|slice:'100'|safe }}...</p>
                         </div>
                         <!-- 注脚 -->
-                        <p>
-                            <!-- 附加信息 -->
-                            <span style="color: blue;">
-                                {{ article.created_time|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
-                            </span>
-                            <span style="color: darkred;">
-                                {{ article.updated_time|date:'Y-m-d' }} 更新
-                            </span>
-                        </p>
-                <hr>
+                        <div class="card-footer">
+                            <a href="{% url 'article:article_detail' article.id %}" class="btn btn-primary">阅读本文</a>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
 

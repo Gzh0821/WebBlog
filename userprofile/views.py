@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import *
 from .models import *
@@ -90,7 +90,7 @@ def profile_edit(request):
 
 
 def profile_show(request, show_user_id):
-    show_user = User.objects.get(id=show_user_id)
+    show_user = get_object_or_404(User, id=show_user_id)
     if Profile.objects.filter(user_id=request.user.id).exists():
         profile = Profile.objects.get(user_id=request.user.id)
     else:
