@@ -35,7 +35,6 @@ def show_article(request):
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     # 传递给模板的对象
-    # TODO:修复markdown在预览界面的显示问题
     show_article_context = {'articles': articles, 'search': search}
     return render(request, template_name='article/list.html', context=show_article_context)
 
@@ -54,6 +53,7 @@ def article_detail(request, article_id):
             'markdown.extensions.codehilite',
             # 标题扩展
             'markdown.extensions.toc',
+            'markdown.extensions.nl2br'
         ])
     if not selected_article.if_publish:
         error_msg = '该文章未被公开'

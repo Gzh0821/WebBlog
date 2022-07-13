@@ -30,8 +30,9 @@
                     <div class="form-group">
                         <label for="text">文章正文</label>
                         <!-- 文本区域 -->
-                        <textarea type="text" class="form-control" id="text" name="text"
-                                  rows="12">{{ article.text }}</textarea>
+                        <div id="md-content" style="border-radius: .25rem">
+                            <textarea type="text" class="form-control" id="text" name="text" rows="12">{{ article.text }}</textarea>
+                        </div>
                     </div>
                     <!-- 是否发布 -->
                     <div class="form-group">
@@ -47,3 +48,27 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block script %}
+    <script src="{% static 'editor/editormd.min.js' %}"></script>
+    <script>
+        // md集成
+        var contentEditor;
+        $(function() {
+            contentEditor = editormd("md-content", {
+                width   : "100%",
+                height  : 640,
+                syncScrolling : "single",
+                path    : "{% static 'editor/lib' %}/",
+                toolbarIcons :function() {
+                return ["undo", "redo", "|",
+                        "bold", "del", "italic", "quote", "|",
+                        "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                        "list-ul", "list-ol", "hr", "|",
+                        "link", "code", "preformatted-text", "code-block", "|",
+                         "watch", "clear", "search" , "help",]
+            },
+            });
+        });
+    </script>
+{% endblock script %}
