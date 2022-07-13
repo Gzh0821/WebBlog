@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 
 
 # ---tips---
@@ -35,3 +36,6 @@ class ArticleStorage(models.Model):
         """调用文章的str()时返回文章标题"""
         # 返回文章标题
         return str(self.title) + '@' + str(self.author)
+
+    def get_absolute_url(self):
+        return reverse('article:article_detail', args=[self.id])

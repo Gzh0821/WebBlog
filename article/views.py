@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticlePostForm
 from .models import *
 from userprofile.models import Profile
-
+from comment.models import Comment
 
 # 主页
 def home_page(request):
@@ -55,24 +55,33 @@ def article_detail(request, article_id):
             'markdown.extensions.toc',
             'markdown.extensions.nl2br'
         ])
+    # 若文章未公开，显示未公开信息
     if not selected_article.if_publish:
         error_msg = '该文章未被公开'
-    if selected_article.if_publish or request.user.is_superuser:
-        selected_article.text = article_markdown.convert(selected_article.text)
-    else:
-        selected_article.text = '该文章未被公开！'
+
+    # 若文章已公开，显示未公开信息
     if not request.user.is_authenticated:
         permission_grade = -1
+        comment_permission = False
     else:
         profile = Profile.objects.get(user_id=request.user.id)
+        comment_permission = profile.comment_permission
         if not profile.author_permission:
             permission_grade = 0
         else:
             permission_grade = 4 if request.user.is_superuser else (1 if selected_article.author == request.user else 0)
     # 传递给模板的对象
+    if selected_article.if_publish or request.user.is_superuser or selected_article.author == request.user:
+        selected_article.text = article_markdown.convert(selected_article.text)
+        comments = Comment.objects.filter(article=article_id)
+    else:
+        selected_article.text = '该文章未被公开！'
+        comments = Comment.objects.none()
     detail_context = {'article': selected_article,
                       'permission_grade': permission_grade,
+                      'comment_permission': comment_permission,
                       'toc': article_markdown.toc,
+                      'comments': comments,
                       'error_msg': error_msg}
     return render(request, template_name='article/detail.html', context=detail_context)
 
@@ -95,7 +104,7 @@ def article_create(request):
             # 指定提交的用户为作者
             add_new_article.author = create_user
             add_new_article.save()
-            return redirect('article:show_article')
+            return redirect(add_new_article)
         else:
             error_msg = "创建表单格式错误！"
     article_post_form = ArticlePostForm()

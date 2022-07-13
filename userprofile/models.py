@@ -20,7 +20,7 @@ class Profile(models.Model):
     # 作者权限
     author_permission = models.BooleanField(default=False)
     # 评论权限
-    comment_permission = models.BooleanField(default=True)
+    comment_permission = models.BooleanField(default=False)
 
     def __str__(self):
         return f'user:{self.user.username}'

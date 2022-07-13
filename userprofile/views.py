@@ -46,7 +46,7 @@ def user_register(request):
         user_register_form = UserRegisterForm(request.POST)
         if user_register_form.is_valid():
             new_user = user_register_form.save()
-            Profile.objects.create(user=request.user)
+            Profile.objects.create(user=new_user)
             login(request, new_user)
             return redirect('article:show_article')
         else:

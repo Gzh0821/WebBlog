@@ -41,6 +41,60 @@
                 <div class="">
                     <p>{{ article.text|safe }}</p>
                 </div>
+                <hr>
+                {% if comment_permission %}
+                    <div>
+                        <form
+                                action="{% url 'comment:post-comment' article.id %}"
+                                method="POST"
+                        >
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="body">
+                                    <strong>
+                                        发表评论：
+                                    </strong>
+                                </label>
+                                <textarea
+                                        type="text"
+                                        class="form-control"
+                                        id="body"
+                                        name="body"
+                                        rows="2"></textarea>
+                            </div>
+                            <!-- 提交按钮 -->
+                            <button type="submit" class="btn btn-primary ">发送</button>
+                        </form>
+                    </div>
+                    <br>
+                {% elif user.is_authenticated %}
+                    <br>
+                    <h5 class="row justify-content-center">
+                        您的账号暂无评论权限！
+                    </h5>
+                    <br>
+                {% else %}
+                    <br>
+                    <h5 class="row justify-content-center">
+                        请<a href="{% url 'userprofile:login' %}">登录</a>后回复
+                    </h5>
+                    <br>
+                {% endif %}
+                <!-- 显示评论 -->
+                <h4>共有{{ comments.count }}条评论</h4>
+                {% for comment in comments %}
+                    <hr>
+                    <p>
+                        <strong style="color: pink">
+                            {{ comment.user }}
+                        </strong> 于
+                        <span style="color: green">
+                    {{ comment.created|date:"Y-m-d H:i:s" }}
+                </span> 时说：
+                    </p>
+                    <pre style="font-family: inherit; font-size: 1em;">
+{{ comment.body }}</pre>
+                {% endfor %}
             </div>
             <br>
             <!--目录部分-->
@@ -54,6 +108,7 @@
                     </div>
                 </div>
             </div>
+            <hr>
             <style>
                 .sidebar {
                     will-change: min-height;
@@ -73,32 +128,33 @@
                         bottomSpacing: 20,
                     });
                 </script>
+                <script>
+                    // 删除文章的函数
+                    function confirm_delete() {
+                        // 调用layer弹窗组件
+                        layer.open({
+                            // 弹窗标题
+                            title: "删除文章",
+                            // 正文
+                            content: "是否删除文章：{{ article.title }} ？",
+                            // 弹出选项
+                            btn: ['确认', '取消',],
+                            // 点击确定按钮后调用的回调函数
+                            yes: function (index, layero) {
+                                // 使JS点击不可见的按钮,执行表单的action
+                                $('form#safe_delete button').click();
+                                layer.close(index);
+                            },
+                            // 关闭窗口，并返回
+                            btn2: function () {
+                                layer.closeAll();
+                            },
+                        })
+                    }
+                </script>
             {% endblock script %}
         </div>
     </div>
 
-    <script>
-        // 删除文章的函数
-        function confirm_delete() {
-            // 调用layer弹窗组件
-            layer.open({
-                // 弹窗标题
-                title: "删除文章",
-                // 正文
-                content: "是否删除文章：{{ article.title }} ？",
-                // 弹出选项
-                btn: ['确认', '取消',],
-                // 点击确定按钮后调用的回调函数
-                yes: function (index, layero) {
-                    // 使JS点击不可见的按钮,执行表单的action
-                    $('form#safe_delete button').click();
-                    layer.close(index);
-                },
-                // 关闭窗口，并返回
-                btn2: function () {
-                    layer.closeAll();
-                },
-            })
-        }
-    </script>
+
 {% endblock content %}
