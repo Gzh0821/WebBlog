@@ -12,8 +12,17 @@
         <div class="row">
             <!--文章部分-->
             <div class="col-9">
+
                 <!-- 标题 -->
                 <h1 class="mt-4 mb-4">{{ article.title }}</h1>
+                <!-- 栏目 -->
+                {% if article.column %}
+                    <button type="button"
+                            class="btn btn-sm mb-2 btn-warning"
+                    >
+                        {{ article.column }}
+                    </button>
+                {% endif %}
                 <!-- 概述 -->
                 <div class="">
                     <p>{{ article.overview }}</p>

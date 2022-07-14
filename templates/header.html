@@ -23,6 +23,7 @@
                             {{ user.username }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if user.is_superuser %}<a class="dropdown-item" href='/admin'>后台管理</a>{% endif %}
                             <a class="dropdown-item" href='{% url "userprofile:userinfo" user.id %}'>个人信息</a>
                             <a class="dropdown-item" href="{% url "userprofile:logout" %}">退出登录</a>
                             <a class="dropdown-item" href="{% url "userprofile:delete" %}">删除用户</a>
@@ -32,6 +33,7 @@
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'userprofile:login' %}">登录</a>
+                        <a class="nav-link" href="{% url 'userprofile:register' %}">注册</a>
                     </li>
                     <!-- if 语句在这里结束 -->
                 {% endif %}

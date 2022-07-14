@@ -30,13 +30,32 @@
                 <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
             {% endif %}
         {% endif %}
+        <a href="{% url "home" %}">所有栏目</a>：
+        {% for column in all_column %}
+            <a href="{% url "article:show_article_with_column" column.id %}">
+                <button type="button"
+                        class="btn btn-sm mb-2
+                        {% if now_column == column %}
+                            btn-success
+                        {% else %}
+                            btn-danger
+                        {% endif %}"
+                >{{ column }}</button></a>
+        {% endfor %}
         <hr>
         <div class="row mt-2">
             <!--列出每篇文章-->
             {% for article in articles %}
                 <!-- 文章内容 -->
                 <div class="col-12">
-                    <!-- 卡片容器 -->
+                    <!-- 栏目 -->
+                    {% if article.column %}
+                        <button type="button"
+                                class="btn btn-sm mb-2 btn-warning"
+                        >
+                            {{ article.column }}
+                        </button>
+                    {% endif %}
                     <!-- 标题 -->
                     <h4>
                         <b>

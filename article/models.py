@@ -7,6 +7,22 @@ from django.urls import reverse
 # ---tips---
 # 修改模型后，需要使用 python manage.py makemigrations 记录修改为一次迁移
 # 再使用 python manage.py migrate 将迁移应用到数据库中
+class ArticleColumn(models.Model):
+    """博客栏目分类"""
+    title = models.CharField(max_length=100, blank=True, unique=True)
+    created = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        """定义栏目的元数据"""
+        verbose_name = '栏目'
+        verbose_name_plural = '栏目'
+        # 数据排序方式:created_time倒序，再以author正序
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title
+
+
 class ArticleStorage(models.Model):
     """博客文章数据模型/库"""
 
@@ -24,6 +40,14 @@ class ArticleStorage(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
     # 文章是否公开
     if_publish = models.BooleanField(default=True)
+    # 所属栏目
+    column = models.ForeignKey(
+        ArticleColumn,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='article'
+    )
 
     class Meta:
         """定义数据库模型的元数据"""

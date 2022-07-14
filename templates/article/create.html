@@ -20,6 +20,19 @@
                         <!-- 文本框 -->
                         <input type="text" class="form-control" id="title" name="title">
                     </div>
+                    <!--文章栏目-->
+                    <div class="form-group">
+                        <label for="column">栏目</label>
+                        <select class="form-control"
+                                id="column"
+                                name="column"
+                        >
+                            <option value="none">请选择栏目..</option>
+                            {% for column in columns %}
+                                <option value="{{ column.id }}">{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <!-- 文章概述 -->
                     <div class="form-group">
                         <!-- 标签 -->

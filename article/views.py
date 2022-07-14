@@ -10,6 +10,7 @@ from .models import *
 from userprofile.models import Profile
 from comment.models import Comment
 
+
 # 主页
 def home_page(request):
     return redirect("article:show_article")
@@ -20,7 +21,7 @@ def test_hello_word(request):
     return HttpResponse("Your user agent:" + str(request.META['HTTP_USER_AGENT']))
 
 
-def show_article(request):
+def show_article(request, selected_column=None):
     """展示所有发布的文章"""
     search = request.GET.get('search')
     if search:
@@ -31,11 +32,17 @@ def show_article(request):
     else:
         search = ''
         article_list = ArticleStorage.objects.all()
+    if selected_column:
+        column = get_object_or_404(ArticleColumn, id=selected_column)
+        article_list = article_list.filter(column_id=column)
+    else:
+        column = ArticleColumn.objects.none()
     paginator = Paginator(article_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
+    all_column = ArticleColumn.objects.all()
     # 传递给模板的对象
-    show_article_context = {'articles': articles, 'search': search}
+    show_article_context = {'articles': articles, 'search': search, 'all_column': all_column, 'now_column': column}
     return render(request, template_name='article/list.html', context=show_article_context)
 
 
@@ -108,7 +115,10 @@ def article_create(request):
         else:
             error_msg = "创建表单格式错误！"
     article_post_form = ArticlePostForm()
-    create_context = {'article_post_form': article_post_form, 'error_msg': error_msg}
+    columns = ArticleColumn.objects.all()
+    create_context = {'article_post_form': article_post_form,
+                      'error_msg': error_msg,
+                      'columns': columns}
     return render(request, template_name='article/create.html', context=create_context)
 
 
@@ -139,6 +149,10 @@ def article_update(request, article_id):
         else:
             error_msg = "文章格式错误，请重新编辑！"
     article_post_form = ArticlePostForm()
-    update_context = {'article': select_article, 'article_post_form': article_post_form, 'error_msg': error_msg}
+    columns = ArticleColumn.objects.all()
+    update_context = {'article': select_article,
+                      'article_post_form': article_post_form,
+                      'error_msg': error_msg,
+                      'columns': columns}
     # 将响应返回到模板中
     return render(request, 'article/update.html', update_context)

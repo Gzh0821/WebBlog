@@ -20,18 +20,41 @@
                         <!-- 文本框 -->
                         <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}">
                     </div>
+                    <!-- 文章栏目 -->
+                    <div class="form-group">
+                        <label for="column">栏目</label>
+                        <select class="form-control"
+                                id="column"
+                                name="column"
+                        >
+                            <option value="none">请选择栏目..</option>
+                            {% for column in columns %}
+                                <option value="{{ column.id }}"
+                                        {% if column.id == article.column.id %}
+                                        selected
+                                        {% endif %}
+                                >
+                                    {{ column }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- 文章概述 -->
                     <div class="form-group">
                         <!-- 标签 -->
                         <label for="title">概述</label>
                         <!-- 文本框 -->
-                        <input type="text" class="form-control" id="overview" name="overview" value="{{ article.overview }}">
+                        <input type="text" class="form-control" id="overview" name="overview"
+                               value="{{ article.overview }}">
                     </div>
+
                     <!-- 文章正文 -->
                     <div class="form-group">
                         <label for="text">文章正文</label>
                         <!-- 文本区域 -->
                         <div id="md-content" style="border-radius: .25rem">
-                            <textarea type="text" class="form-control" id="text" name="text" rows="12">{{ article.text }}</textarea>
+                            <textarea type="text" class="form-control" id="text" name="text"
+                                      rows="12">{{ article.text }}</textarea>
                         </div>
                     </div>
                     <!-- 是否发布 -->
@@ -54,20 +77,20 @@
     <script>
         // md集成
         var contentEditor;
-        $(function() {
+        $(function () {
             contentEditor = editormd("md-content", {
-                width   : "100%",
-                height  : 640,
-                syncScrolling : "single",
-                path    : "{% static 'editor/lib' %}/",
-                toolbarIcons :function() {
-                return ["undo", "redo", "|",
+                width: "100%",
+                height: 640,
+                syncScrolling: "single",
+                path: "{% static 'editor/lib' %}/",
+                toolbarIcons: function () {
+                    return ["undo", "redo", "|",
                         "bold", "del", "italic", "quote", "|",
                         "h1", "h2", "h3", "h4", "h5", "h6", "|",
                         "list-ul", "list-ol", "hr", "|",
                         "link", "image", "code", "preformatted-text", "code-block", "|",
-                         "watch", "clear", "search" , "help",]
-            },
+                        "watch", "clear", "search", "help",]
+                },
             });
         });
     </script>
