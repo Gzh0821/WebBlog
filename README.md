@@ -2,7 +2,7 @@
 
  一个简易的，支持markdown语法的博客系统。可零基础搭建，易于复现与修改！
 
-基于`python3.10`，`django 4.0`和`bootstrap 4`
+基于`python 3.10`，`django 4.0`和`bootstrap 4`
 
 ![](https://img.shields.io/badge/author-Gaozih-%2366ccff)
 ![](https://img.shields.io/github/license/Gzh0821/WebBlog)
