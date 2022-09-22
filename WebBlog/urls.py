@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.views import static
 
 from article.views import show_article
 
@@ -24,4 +26,5 @@ urlpatterns = [
     path('article/', include('article.urls', namespace='article')),
     path('userprofile/', include('userprofile.urls', namespace='userprofile')),
     path('comment/', include('comment.urls', namespace='comment')),
+    path('static/<path>', static.serve, {'document_root': settings.STATIC_ROOT}, name='static'),
 ]
