@@ -22,6 +22,10 @@ def test_hello_word(request):
                         f"[IP address:{str(request.META['REMOTE_ADDR'])}]")
 
 
+def page_not_found(request, exception):
+    return render(request, '404.html', status=404, context={'exception': exception})
+
+
 def show_article(request, selected_column=None):
     """展示所有发布的文章"""
     search = request.GET.get('search')

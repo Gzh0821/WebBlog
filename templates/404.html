@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} 404 Not Found {% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <h1 class="col-12 mt-4 mb-4">404 Not Found</h1>
+            <h2 class="col-12 mt-4 mb-4">{{ exception }}</h2>
+        </div>
+    </div>
+{% endblock content %}
