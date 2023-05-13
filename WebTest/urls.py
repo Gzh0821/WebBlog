@@ -18,10 +18,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.views import static
 
-from article.views import show_article
+from article.views import show_article, test_hello_word
 
 urlpatterns = [
     path('', show_article, name='home'),
+    path('test/', test_hello_word, name='test_hello'),
     path('admin/', admin.site.urls, name='admin'),
     path('article/', include('article.urls', namespace='article')),
     path('userprofile/', include('userprofile.urls', namespace='userprofile')),

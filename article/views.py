@@ -18,7 +18,8 @@ def home_page(request):
 
 def test_hello_word(request):
     """A simple HelloWorld test,return USER_AGENT for example"""
-    return HttpResponse("Your user agent:" + str(request.META['HTTP_USER_AGENT']))
+    return HttpResponse(f"[Server Start Success][user agent:{str(request.META['HTTP_USER_AGENT'])}]"
+                        f"[IP address:{str(request.META['REMOTE_ADDR'])}]")
 
 
 def show_article(request, selected_column=None):
@@ -96,7 +97,7 @@ def article_detail(request, article_id):
         selected_article.text = article_markdown.convert(selected_article.text)
         comments = Comment.objects.filter(article=article_id)
     else:
-        selected_article.text = '该文章未被公开！'
+        selected_article.text = '该活动未被公开！'
         comments = Comment.objects.none()
     # 是否已收藏
 
@@ -167,7 +168,7 @@ def article_update(request, article_id):
             # article_post_form.save_m2m()
             return redirect("article:article_detail", article_id=article_id)
         else:
-            error_msg = "文章格式错误，请重新编辑！"
+            error_msg = "活动格式错误，请重新编辑！"
     article_post_form = ArticlePostForm()
     columns = ArticleColumn.objects.all()
     update_context = {'article': select_article,
