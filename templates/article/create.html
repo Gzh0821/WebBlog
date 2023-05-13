@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}创建文章{% endblock title %}
+{% block title %}创建活动{% endblock title %}
 
 {% block content %}
     <div class="container">
         <div class="row">
-            <h1 class="col-12 mt-4 mb-4">创建文章</h1>
+            <h1 class="col-12 mt-4 mb-4">创建活动</h1>
             <div class="col-12">
                 <br>
                 <!-- 提交文章的表单 -->
@@ -16,7 +16,7 @@
                     <!-- 文章标题 -->
                     <div class="form-group">
                         <!-- 标签 -->
-                        <label for="title">文章标题</label>
+                        <label for="title">活动名称</label>
                         <!-- 文本框 -->
                         <input type="text" class="form-control" id="title" name="title">
                     </div>
@@ -40,9 +40,51 @@
                         <!-- 文本框 -->
                         <input type="text" class="form-control" id="overview" name="overview">
                     </div>
+                    <!-- 活动地点 -->
+                    <div class="form-group">
+                        <!-- 标签 -->
+                        <label for="title">活动地点</label>
+                        <!-- 文本框 -->
+                        <input type="text" class="form-control" id="com_location" name="com_location">
+                    </div>
+                    <!-- 活动限制 -->
+                    <div class="form-group">
+                        <!-- 标签 -->
+                        <label for="title">活动限制</label>
+                        <!-- 文本框 -->
+                        <input type="text" class="form-control" id="com_limit" name="com_limit">
+                    </div>
+{#                    <!-- 文章标签 -->#}
+{#                    <div class="form-group">#}
+{#                        <label for="tags">标签</label>#}
+{#                        <input type="text"#}
+{#                               class="form-control col-3"#}
+{#                               id="tags"#}
+{#                               name="tags"#}
+{#                        >#}
+{#                    </div>#}
+
+                    <div class="form-group">
+                        <!-- 开始时间 -->
+                        <label for="com_start_time">开始时间</label>
+                        <input type="datetime-local"
+                               class="form-control col-3"
+                               id="com_start_time"
+                               name="com_start_time"
+                        >
+                    </div>
+                    <!-- 结束时间 -->
+                    <div class="form-group">
+                        <label for="com_end_time">结束时间</label>
+                        <input type="datetime-local"
+                               class="form-control col-3"
+                               id="com_end_time"
+                               name="com_end_time"
+                        >
+                    </div>
                     <!-- 文章正文 -->
                     <div class="form-group">
-                        <label for="text">文章正文</label>
+                        <label for="text">活动内容</label>
                         <!-- 文本区域 -->
                         <div id="md-content" style="border-radius: .25rem">
                             <textarea type="text" class="form-control" id="text" name="text" rows="12"></textarea>
@@ -53,6 +95,8 @@
                         <!-- 勾选框 -->
                         <input type="checkbox" id="if_publish" name="if_publish" checked>
                         <label class="form-check-label" for="if_publish">公开发布</label>
+                        <input type="checkbox" id="com_if_group" name="com_if_group" checked>
+                        <label class="form-check-label" for="com_if_group">允许组队</label>
                     </div>
                     <!-- 提交按钮 -->
                     <button type="submit" class="btn btn-primary">完成</button>
@@ -68,20 +112,20 @@
     <script>
         // md集成
         var contentEditor;
-        $(function() {
+        $(function () {
             contentEditor = editormd("md-content", {
-                width   : "100%",
-                height  : 640,
-                syncScrolling : "single",
-                path    : "{% static 'editor/lib' %}/",
-                toolbarIcons :function() {
-                return ["undo", "redo", "|",
+                width: "100%",
+                height: 640,
+                syncScrolling: "single",
+                path: "{% static 'editor/lib' %}/",
+                toolbarIcons: function () {
+                    return ["undo", "redo", "|",
                         "bold", "del", "italic", "quote", "|",
                         "h1", "h2", "h3", "h4", "h5", "h6", "|",
                         "list-ul", "list-ol", "hr", "|",
                         "link", "code", "preformatted-text", "code-block", "|",
-                         "watch", "clear", "search" , "help",]
-            },
+                        "watch", "clear", "search", "help",]
+                },
             });
         });
     </script>

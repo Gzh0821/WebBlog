@@ -5,18 +5,78 @@
     <div class="container">
         <div class="row">
             <h1 class="col-12 mt-4 mb-4">个人信息</h1>
+
             <div class="col-12">
-                <br>
-                <div class="col-md-4">用户名: {{ show_user.username }}</div><hr>
-                <div class="col-md-4">撰写权限: {{ profile.author_permission }}</div><hr>
-                <div class="col-md-4">评论权限: {{ profile.comment_permission }}</div><hr>
-                <div class="col-md-4">电话：{{ profile.phone }}</div><hr>
-                <div class="col-md-4">个人简介：</div>
-                <div class="col-12">{{ profile.bio }}</div><hr>
                 {% if show_user.id == user.id %}
                     <a href="{% url 'userprofile:edit' %}" class="btn btn-primary">编辑</a>
                 {% endif %}
+                <br>
+                <br>
+                <div class="col-md-4">用户名: {{ show_user.username }}</div>
+                <hr>
+                <div class="col-md-4">创建活动权限: {{ profile.author_permission }}</div>
+                <hr>
+                <div class="col-md-4">评论权限: {{ profile.comment_permission }}</div>
+                <hr>
+                <div class="col-md-4">电话：{{ profile.phone }}</div>
+                <hr>
+                <div class="col-md-4">个人简介：</div>
+                <div class="col-12">{{ profile.bio }}</div>
+                <hr>
+                <div class="col-md-4">我创建的活动：</div>
+                <div class="row mt-2">
+                    <!--列出每篇文章-->
+                    {% for article in created_articles %}
+                        <!-- 文章内容 -->
+                        <div class="col-4 mb-4">
+                            <!-- 卡片容器 -->
+                            <div class="card h-100">
+                                <!-- 标题 -->
+                                <h4 class="card-header">{{ article.title }}</h4>
+                                <!-- 概述 -->
+                                <div class="card-body">
+                                    <!--取出概述的前150字-->
+                                    <p class="card-text">{{ article.overview|slice:'100'|safe }}...</p>
+                                </div>
+                                <!-- 注脚 -->
+                                <div class="card-footer">
+                                    <a href="{% url 'article:article_detail' article.id %}"
+                                       class="btn btn-primary">阅读本文</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <hr>
+                <div class="col-md-4">我的收藏：</div>
+                <div class="row mt-2">
+                    <!--列出每篇文章-->
+                    {% for article in collect_articles %}
+                        <!-- 文章内容 -->
+                        <div class="col-4 mb-4">
+                            <!-- 卡片容器 -->
+                            <div class="card h-100">
+                                <!-- 标题 -->
+                                <h4 class="card-header">{{ article.title }}</h4>
+                                <!-- 概述 -->
+                                <div class="card-body">
+                                    <!--取出概述的前150字-->
+                                    <p class="card-text">{{ article.overview|slice:'100'|safe }}...</p>
+                                </div>
+                                <!-- 注脚 -->
+                                <div class="card-footer">
+                                    <a href="{% url 'article:article_detail' article.id %}"
+                                       class="btn btn-primary">阅读本文</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
             </div>
+
+
         </div>
     </div>
 {% endblock content %}

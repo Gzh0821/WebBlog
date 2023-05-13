@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from article.models import ArticleStorage
 
 # ---tips---
 # 修改模型后，需要使用 python manage.py makemigrations 记录修改为一次迁移
@@ -18,9 +18,12 @@ class Profile(models.Model):
     # 简介
     bio = models.TextField(max_length=300, blank=True)
     # 作者权限
-    author_permission = models.BooleanField(default=False)
+    author_permission = models.BooleanField(default=False, verbose_name='创建活动权限')
     # 评论权限
-    comment_permission = models.BooleanField(default=False)
+    comment_permission = models.BooleanField(default=False, verbose_name='评论权限')
+
+    # 收藏的活动
+    collected_com = models.ManyToManyField(ArticleStorage,blank=True)
 
     def __str__(self):
         return f'user:{self.user.username}'

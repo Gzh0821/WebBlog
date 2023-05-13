@@ -11,4 +11,5 @@ urlpatterns = [
     path('delete/', views.user_delete, name='delete'),
     path('edit/', views.profile_edit, name='edit'),
     path('userinfo/<int:show_user_id>', views.profile_show, name='userinfo'),
+
 ]

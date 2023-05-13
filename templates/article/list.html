@@ -11,37 +11,41 @@
         <br>
         <div class="row">
             <div class="col-auto mr-auto" style="width: 100%">
-                <form class="form-inline">
+                <form class="form-inline d-flex align-items-center">
                     <label class="sr-only">content</label>
-                    <input type="text"
-                           class="form-control mb-2 mr-sm-2"
-                           name="search"
-                           placeholder="搜索文章..."
-                           style="width: 100%"
-                    >
+                    <input type="text" class="form-control mr-2" name="search" placeholder="筛选活动..."
+                           style="width: 80%">
+                    <div class="form-check mr-2">
+                        <input type="checkbox" class="form-check-input" id="collect" name="collect" value="True">
+                        <label class="form-check-label" for="collect">仅查看已收藏</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">筛选</button>
                 </form>
             </div>
         </div>
         <br>
-        {% if search %}
+        {% if search%}
             {% if articles %}
                 <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
             {% else %}
-                <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+                <h4>暂无<span style="color: red">"{{ search }}"</span>有关的活动。</h4>
             {% endif %}
-        {% endif %}
-        <a href="{% url "home" %}">所有栏目</a>：
-        {% for column in all_column %}
-            <a href="{% url "article:show_article_with_column" column.id %}">
-                <button type="button"
-                        class="btn btn-sm mb-2
+
+        {% elif not show_collect %}
+            <a href="{% url "home" %}">所有分类</a>：
+            {% for column in all_column %}
+                <a href="{% url "article:show_article_with_column" column.id %}">
+                    <button type="button"
+                            class="btn btn-sm mb-2
                         {% if now_column == column %}
                             btn-success
                         {% else %}
                             btn-danger
                         {% endif %}"
-                >{{ column }}</button></a>
-        {% endfor %}
+                    >{{ column }}</button>
+                </a>
+            {% endfor %}
+        {% endif %}
         <hr>
         <div class="row mt-2">
             <!--列出每篇文章-->

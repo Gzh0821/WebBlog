@@ -29,18 +29,47 @@
                 </div>
                 <div class="alert alert-success">
                     <div>作者：{{ article.author }}</div>
-                    {% if permission_grade > 0 %}
-                        <div>
-                            <a href="{% url 'article:article_update' article.id %}">编辑文章</a>
-                            | <a href="javascript:void(0);" onclick="confirm_delete()">删除文章</a>
-                        </div>
-                    {% endif %}
+                    <div>
+                        {% if user.is_authenticated %}
+                            {% if if_collected %}
+                                已收藏
+                                | <a href="javascript:void(0);" onclick="confirm_cancel_collect()">取消收藏</a>
+                            {% else %}
+                                <a href="{% url 'article:article_collect' article.id %}">收藏</a>
+                            {% endif %}
+                        {% endif %}
+                        {% if permission_grade > 0 %}
+
+                            | <a href="{% url 'article:article_update' article.id %}">编辑活动</a>
+                            | <a href="javascript:void(0);" onclick="confirm_delete()">删除活动</a>
+
+                        {% endif %}
+                    </div>
                     <div><span style="color: red">{{ error_msg }}</span></div>
                 </div>
+                <div class="alert alert-info">
+                    <div>活动地点：{{ article.com_location }}</div>
+                    <div>活动时间：{{ article.com_start_time }} - {{ article.com_end_time }}</div>
+                </div>
+                <div class="alert alert-warning">
+                    <div>是否允许组队：{{ article.com_if_group }}</div>
+                    <div>活动限制：{{ article.com_limit }}</div>
+                </div>
+                {#<!-- 安全删除 -->#}
                 <form
                         style="display:none;"
                         id="safe_delete"
                         action="{% url 'article:article_delete' article.id %}"
+                        method="POST"
+                >
+                    {% csrf_token %}
+                    <button type="submit">send</button>
+                </form>
+                {#<!-- 安全取消收藏 -->#}
+                <form
+                        style="display:none;"
+                        id="safe_cancel_collect"
+                        action="{% url 'article:article_cancel_collect' article.id %}"
                         method="POST"
                 >
                     {% csrf_token %}
@@ -143,15 +172,38 @@
                         // 调用layer弹窗组件
                         layer.open({
                             // 弹窗标题
-                            title: "删除文章",
+                            title: "删除活动",
                             // 正文
-                            content: "是否删除文章：{{ article.title }} ？",
+                            content: "是否删除活动：{{ article.title }} ？",
                             // 弹出选项
                             btn: ['确认', '取消',],
                             // 点击确定按钮后调用的回调函数
                             yes: function (index, layero) {
                                 // 使JS点击不可见的按钮,执行表单的action
                                 $('form#safe_delete button').click();
+                                layer.close(index);
+                            },
+                            // 关闭窗口，并返回
+                            btn2: function () {
+                                layer.closeAll();
+                            },
+                        })
+                    }
+
+                    // 收藏文章的函数
+                    function confirm_cancel_collect() {
+                        // 调用layer弹窗组件
+                        layer.open({
+                            // 弹窗标题
+                            title: "取消收藏活动",
+                            // 正文
+                            content: "是否取消收藏活动：{{ article.title }} ？",
+                            // 弹出选项
+                            btn: ['确认', '返回',],
+                            // 点击确定按钮后调用的回调函数
+                            yes: function (index, layero) {
+                                // 使JS点击不可见的按钮,执行表单的action
+                                $('form#safe_cancel_collect button').click();
                                 layer.close(index);
                             },
                             // 关闭窗口，并返回

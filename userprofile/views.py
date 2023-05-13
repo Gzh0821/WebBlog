@@ -95,5 +95,8 @@ def profile_show(request, show_user_id):
         profile = Profile.objects.get(user_id=request.user.id)
     else:
         profile = Profile.objects.create(user=request.user)
-    edit_context = {'profile': profile, 'show_user': show_user}
+    created_articles = ArticleStorage.objects.filter(author=request.user)
+    collect_articles = profile.collected_com.all()
+    edit_context = {'profile': profile, 'show_user': show_user,
+                    'created_articles': created_articles, 'collect_articles': collect_articles}
     return render(request, template_name='userprofile/info.html', context=edit_context)
