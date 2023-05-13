@@ -1,8 +1,8 @@
 # A Simple Django WebBlog
 
- 一个简易的，支持markdown语法的博客系统。可零基础搭建，易于复现与修改！
+ 一个简易的，支持markdown语法的博客系统。
 
-基于`python 3.10`，`django 4.0`和`bootstrap 4`
+基于`python 3.11`，`django 4.0`和`bootstrap 4`
 
 ![](https://img.shields.io/badge/author-Gaozih-%2366ccff)
 ![](https://img.shields.io/github/license/Gzh0821/WebBlog)
@@ -21,13 +21,6 @@
 ## 简易的安装与调试
 ### 配置python3和django环境
 - **不建议使用本方法部署到实际生产服务器**
-
-- **若您已安装python和django环境，可跳过本步骤**
-- 安装`python 3.10`，可在[python.org](https://www.python.org)中下载
-（windows平台安装时，请勾选：Add Python to environment variables）
-
-- 部分系统预装有python2，执行以下命令时，请将`python`更改为`python3`
-- （可选）使用`virtualenv`创建虚拟环境
 
 ### 配置项目设置
 - 下载项目压缩包或使用git：`git clone https://github.com/Gzh0821/WebBlog.git` 命令，将项目文件下载到本地
