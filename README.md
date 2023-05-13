@@ -32,7 +32,7 @@
 - 输入命令
 - `pip3 install -r requirements.txt`安装项目需要的库
 
-- 在终端中打开`python`（3.10）版本，使用以下命令获得一个新的 __SECRET_KEY__ 
+- 在终端中打开`python`，使用以下命令获得一个新的 __SECRET_KEY__ 
 ```python3
 from django.core.management.utils import get_random_secret_key
 print(get_random_secret_key())
