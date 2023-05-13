@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.views import static
 
-from django.conf.urls.static import static as urstatic
+from django.conf.urls.static import static as urlstatic
 from django.contrib.staticfiles.views import serve
 
 from article.views import show_article, test_hello_word
@@ -36,4 +36,4 @@ urlpatterns = [
 handler404 = 'article.views.page_not_found'
 
 if not settings.DEBUG:
-    urlpatterns += urstatic(settings.STATIC_URL, view=serve)
+    urlpatterns += urlstatic(settings.STATIC_URL, view=serve)
