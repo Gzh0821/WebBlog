@@ -1,4 +1,4 @@
-# A Simple Django WebBlog
+# A Simulate Django Competition System
 
  一个简易的，支持markdown语法的模拟活动展示系统，基于本项目主分支。
 
